@@ -71,11 +71,15 @@
     - `03_bitacora_tecnica_sprint1.md`
     - `04_referencia_api_sprint1.md`
     - `INDEX.md`
+  - Edición de conexión Gupshup desde Settings:
+    - `client/src/components/settings/EditGupshupConnectionForm.tsx`
+    - botón Edit en canales `whatsapp_gupshup`.
 
 ## Resultado de testing y estado
 - Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
 - Consecuencia: endpoints nuevos (`/api/lead-assignment/*`) y UI nueva no se pudieron validar e2e sobre esa URL.
 - Se actualizó `/app/memory/test_credentials.md` con credenciales proporcionadas por el usuario para futuras pruebas autenticadas.
+- Estado de sprint: Sprint 1 cerrado a nivel desarrollo/documentación (`/app/WhatCEM_Powerchat/docs/05_cierre_sprint1.md`).
 
 ## Backlog priorizado
 
