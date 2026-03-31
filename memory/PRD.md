@@ -97,12 +97,14 @@
   - Nuevos nodos `AI Voice Assistant` y `AI Outbound Call`
   - soporte en `shared/types/node-types.ts`
   - soporte de ejecución en `server/services/flow-executor.ts`
+  - componente dedicado de edición de nodo: `client/src/components/flow-builder/AIVoiceCallNode.tsx`
 
 ## Resultado de testing y estado
 - Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
 - Consecuencia: endpoints nuevos (`/api/lead-assignment/*`) y UI nueva no se pudieron validar e2e sobre esa URL.
 - Se actualizó `/app/memory/test_credentials.md` con credenciales proporcionadas por el usuario para futuras pruebas autenticadas.
 - Estado de sprint: Sprint 1 cerrado a nivel desarrollo/documentación (`/app/WhatCEM_Powerchat/docs/05_cierre_sprint1.md`).
+- Testing Sprint 2: el testing agent confirmó inconsistencia de entorno público (endpoints `/api/voice-campaigns*` no desplegados en runtime público) y credenciales inválidas para prueba autenticada en esa URL. Código fuente sí contiene implementación.
 
 ## Backlog priorizado
 
