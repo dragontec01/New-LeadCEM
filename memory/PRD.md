@@ -67,6 +67,10 @@
   - Nuevo endpoint: `GET /api/lead-assignment/metrics?days=7|15|30|60`.
   - Nuevo endpoint: `POST /api/lead-assignment/auto-assign-pending` para asignación masiva de conversaciones no asignadas.
   - Soporte de envío `whatsapp_gupshup` en rutas de envío de mensajes WhatsApp del backend.
+  - Documentación viva agregada en `/app/WhatCEM_Powerchat/docs/`:
+    - `03_bitacora_tecnica_sprint1.md`
+    - `04_referencia_api_sprint1.md`
+    - `INDEX.md`
 
 ## Resultado de testing y estado
 - Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
