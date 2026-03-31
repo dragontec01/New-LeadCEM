@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="1.022" timestamp="2026-03-31T23:06:58.410326+00:00" hostname="agent-env-13ca4f1c-8f65-4c14-b90f-d838b1617b6f"><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_lead_assignment_rules_get_exists" time="0.246"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:40: in test_lead_assignment_rules_get_exists
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_lead_assignment_rules_post_exists" time="0.109"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:54: in test_lead_assignment_rules_post_exists
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_lead_assignment_events_get_exists" time="0.112"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/events&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:60: in test_lead_assignment_events_get_exists
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/events
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_assign_next_exists" time="0.128"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/conversations/1/assign-next&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:66: in test_assign_next_exists
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/conversations/1/assign-next
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_notifications_test_exists" time="0.145"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/notifications/test&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:72: in test_notifications_test_exists
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/notifications/test
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_lead_assignment_public_endpoints" name="test_channel_connections_post_exists_for_gupshup" time="0.176"><failure message="AssertionError: Endpoint missing/unrouted on public URL: /api/channel-connections&#10;assert 404 != 404&#10; +  where 404 = &lt;Response [404]&gt;.status_code">backend/tests/test_lead_assignment_public_endpoints.py:90: in test_channel_connections_post_exists_for_gupshup
+    assert_not_404(response, endpoint)
+backend/tests/test_lead_assignment_public_endpoints.py:34: in assert_not_404
+    assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E   AssertionError: Endpoint missing/unrouted on public URL: /api/channel-connections
+E   assert 404 != 404
+E    +  where 404 = &lt;Response [404]&gt;.status_code</failure></testcase></testsuite></testsuites>
