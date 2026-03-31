@@ -58,6 +58,15 @@
   - Integración en Settings para canal `WhatsApp Gupshup` (card + modal + channel info).
   - Mejora de testabilidad: `data-testid` agregados en tarjetas “Add New Channel”, incluyendo Gupshup.
   - Limpieza técnica: removida duplicación de `initializeGoogleTranslateCompatibility()` en `client/src/App.tsx`.
+  - KPIs operativos añadidos en `/settings/lead-assignment`:
+    - total de asignaciones,
+    - tasa de entrega,
+    - enviadas/fallidas,
+    - distribución por proveedor,
+    - top vendedores por asignación (filtro por ventana de días).
+  - Nuevo endpoint: `GET /api/lead-assignment/metrics?days=7|15|30|60`.
+  - Nuevo endpoint: `POST /api/lead-assignment/auto-assign-pending` para asignación masiva de conversaciones no asignadas.
+  - Soporte de envío `whatsapp_gupshup` en rutas de envío de mensajes WhatsApp del backend.
 
 ## Resultado de testing y estado
 - Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
