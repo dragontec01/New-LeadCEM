@@ -75,6 +75,29 @@
     - `client/src/components/settings/EditGupshupConnectionForm.tsx`
     - botón Edit en canales `whatsapp_gupshup`.
 
+## Avance Sprint 2 (fase 1) implementado
+- Backend de campañas de llamadas IA:
+  - `shared/db/schema/voice_campaigns.ts`
+  - `migrations/110-add-voice-campaigns.sql`
+  - `server/routes/voice-campaigns.ts`
+  - `server/services/ai-script-generator.ts`
+  - `server/services/channels/twilio-voice.ts`
+  - `server/services/ai-voice-call-service.ts`
+- Nuevos endpoints:
+  - `GET /api/voice-campaigns`
+  - `POST /api/voice-campaigns`
+  - `POST /api/voice-campaigns/:id/start`
+  - `GET /api/voice-campaigns/:id/calls`
+  - `POST /api/voice-campaigns/test-call`
+- Frontend Sprint 2 fase 1:
+  - Nueva página `client/src/pages/voice-campaigns.tsx`
+  - Ruta `/campaigns/voice`
+  - Acceso en sidebar `Voice AI`
+- Flow Builder Sprint 2 fase 1:
+  - Nuevos nodos `AI Voice Assistant` y `AI Outbound Call`
+  - soporte en `shared/types/node-types.ts`
+  - soporte de ejecución en `server/services/flow-executor.ts`
+
 ## Resultado de testing y estado
 - Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
 - Consecuencia: endpoints nuevos (`/api/lead-assignment/*`) y UI nueva no se pudieron validar e2e sobre esa URL.
@@ -94,9 +117,9 @@
 - Re-ejecutar testing e2e de Sprint 1 sobre entorno correcto (backend + frontend).
 
 ### P1 (alto valor)
-- Fallback automático entre proveedores de mensajería.
 - Dashboard operativo de asignaciones/notificaciones (SLA, entrega, fallos).
 - Reglas avanzadas de asignación (ponderado por capacidad y por equipo).
+- Campañas de voz: ejecución asíncrona por cola y webhooks de estado de llamada.
 
 ### P2 (expansión)
 - Campañas masivas WhatsApp con segmentación avanzada.

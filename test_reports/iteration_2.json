@@ -1,0 +1,82 @@
+{
+  "summary": "Executed backend pytest and frontend smoke against public WhatCEM URL for Sprint 2 voice scope. Runtime validation is blocked: all /api/voice-campaigns endpoints return 404 in deployed target, and provided credentials do not grant authenticated access to /campaigns/voice.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/voice-campaigns (GET)",
+        "issue": "Returns 404 on public deployment; router/path not available in tested runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns (POST)",
+        "issue": "Returns 404 on public deployment; campaign creation endpoint unreachable.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns/:id/start (POST)",
+        "issue": "Returns 404 on public deployment; cannot process contacts/generate call logs.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns/:id/calls (GET)",
+        "issue": "Returns 404 on public deployment; cannot retrieve call records.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns/test-call (POST)",
+        "issue": "Returns 404 on public deployment; Twilio test-call flow unreachable.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Login gate for /campaigns/voice",
+        "issue": "Route renders auth page; required authenticated session unavailable with provided credentials (401 Invalid credentials).",
+        "selector": "button:has-text('Login')",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Voice campaign UI to backend",
+        "issue": "Could not verify create/start/test-call from UI because target runtime exposes no /api/voice-campaigns endpoints and user login failed.",
+        "affected_selectors": [
+          "[data-testid='voice-campaigns-page']",
+          "[data-testid='sidebar-voice-campaigns-link']"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_voice_campaigns_public_endpoints.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Deploy/runtime-sync the build containing /api/voice-campaigns routes (current public runtime returns 404 for all Sprint 2 voice endpoints).",
+    "Provide valid non-admin app credentials for authenticated /campaigns/voice and /flows testing.",
+    "Retest full backend + UI integrations after deployment and credentials are corrected.",
+    "For Flow Builder UX: verify AI Outbound Call node uses a dedicated editor with Twilio fields (twilioConnectionId/fromNumber/targetPhoneVariable), not only generic AI assistant controls."
+  ],
+  "critical_code_review_comments": [
+    "Static code confirms router mount exists in source (server/routes.ts), but deployed runtime does not expose it; release/infrastructure mismatch is the immediate RCA.",
+    "Flow Builder maps both 'ai_voice_assistant' and 'ai_voice_call' to AIAssistantNode; AI Outbound Call configuration risks being incomplete in UI if dedicated Twilio-call fields are not rendered by that component."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_voice_campaigns_public_endpoints.py",
+    "/app/test_reports/iteration_2.json"
+  ],
+  "success_rate": {
+    "backend": "0%",
+    "frontend": "20%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Validated static references for Sprint 2 voice feature are present in source (route mount, Voice page route, sidebar link, flow node entries, executor node type handling). Runtime E2E remains blocked by public deployment mismatch and invalid provided app login credentials.",
+  "rca of the issue": "Reproduction: run pytest on /api/voice-campaigns endpoints against configured public URL -> all 404; open https://app.whatcem.com/campaigns/voice and attempt login with credentials from /app/memory/test_credentials.md -> 401 Invalid credentials. Mitigation: align deployed environment with this repository's Sprint 2 voice backend and provide valid authenticated test account.",
+  "test_credentials": "Read from /app/memory/test_credentials.md: admin@whatcem.com / Sophia21#. Credentials failed for app login at /campaigns/voice (401 Invalid credentials)."
+}
