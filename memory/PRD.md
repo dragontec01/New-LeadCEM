@@ -46,6 +46,23 @@
     - `POST /api/lead-assignment/conversations/:id/assign-next`
     - `POST /api/lead-assignment/notifications/test`
   - Integración del router en `server/routes.ts`.
+- Frontend Sprint 1 (operación inicial):
+  - Nueva página: `/app/WhatCEM_Powerchat/client/src/pages/lead-assignment.tsx`
+    - Configuración de reglas de ruleta
+    - Prueba de notificación
+    - Ejecución manual de asignación por conversationId
+    - Tabla de eventos recientes
+  - Nueva ruta de app: `/settings/lead-assignment` en `client/src/App.tsx`.
+  - Nuevo acceso en sidebar: `Lead Router IA` en `client/src/components/layout/Sidebar.tsx`.
+  - Nuevo formulario de integración: `/app/WhatCEM_Powerchat/client/src/components/settings/GupshupWhatsAppForm.tsx`.
+  - Integración en Settings para canal `WhatsApp Gupshup` (card + modal + channel info).
+  - Mejora de testabilidad: `data-testid` agregados en tarjetas “Add New Channel”, incluyendo Gupshup.
+  - Limpieza técnica: removida duplicación de `initializeGoogleTranslateCompatibility()` en `client/src/App.tsx`.
+
+## Resultado de testing y estado
+- Se ejecutó testing agent y reportó **bloqueo de entorno**: la URL pública configurada en `/app/frontend/.env` apunta a otra app placeholder y no al despliegue de WhatCEM.
+- Consecuencia: endpoints nuevos (`/api/lead-assignment/*`) y UI nueva no se pudieron validar e2e sobre esa URL.
+- Se actualizó `/app/memory/test_credentials.md` con credenciales proporcionadas por el usuario para futuras pruebas autenticadas.
 
 ## Backlog priorizado
 
@@ -54,6 +71,10 @@
 - Crear CRUD de conexiones `whatsapp_gupshup` y `whatsapp_twilio` desde panel de canales.
 - Ejecutar migración 109 en ambiente de staging/producción.
 - Validar extremo a extremo: asignación automática + notificación WhatsApp en datos reales.
+
+### P0 operativo inmediato (desbloqueo QA)
+- Corregir mapeo de URL de pruebas para que apunte al despliegue real de WhatCEM.
+- Re-ejecutar testing e2e de Sprint 1 sobre entorno correcto (backend + frontend).
 
 ### P1 (alto valor)
 - Fallback automático entre proveedores de mensajería.
