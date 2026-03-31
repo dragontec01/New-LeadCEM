@@ -31,14 +31,29 @@
   - plantillas de notificación,
   - setup Twilio/Gupshup,
   - troubleshooting y buenas prácticas operativas.
+- Backend Sprint 1 (base funcional):
+  - Nuevo schema: `/app/WhatCEM_Powerchat/shared/db/schema/lead_assignment.ts`
+    - `lead_assignment_rules`
+    - `lead_assignment_state`
+    - `lead_assignment_events`
+  - Nuevo migration SQL: `/app/WhatCEM_Powerchat/migrations/109-add-lead-assignment-and-gupshup.sql`
+  - Nuevo canal soportado en schema: `whatsapp_gupshup` en `shared/db/schema/assigns.ts`
+  - Nuevo servicio: `/app/WhatCEM_Powerchat/server/services/channels/whatsapp-gupshup.ts`
+  - Nuevo router: `/app/WhatCEM_Powerchat/server/routes/lead-assignment.ts`
+    - `GET /api/lead-assignment/rules`
+    - `POST /api/lead-assignment/rules`
+    - `GET /api/lead-assignment/events`
+    - `POST /api/lead-assignment/conversations/:id/assign-next`
+    - `POST /api/lead-assignment/notifications/test`
+  - Integración del router en `server/routes.ts`.
 
 ## Backlog priorizado
 
 ### P0 (crítico, siguiente ejecución)
-- Implementar motor de ruleta de asignación (round-robin + disponibilidad).
-- Persistir historial de asignación y auditoría por lead.
-- Implementar notificación WhatsApp al vendedor asignado con trazabilidad de estado.
-- Crear módulo de configuración de integraciones Twilio/Gupshup (credenciales + test de conexión).
+- Conectar UI admin para configuración de reglas de ruleta y test de notificaciones.
+- Crear CRUD de conexiones `whatsapp_gupshup` y `whatsapp_twilio` desde panel de canales.
+- Ejecutar migración 109 en ambiente de staging/producción.
+- Validar extremo a extremo: asignación automática + notificación WhatsApp en datos reales.
 
 ### P1 (alto valor)
 - Fallback automático entre proveedores de mensajería.
