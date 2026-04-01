@@ -1,0 +1,89 @@
+{
+  "summary": "Executed backend+frontend validation for Sprint 2 Phase 2 (Campaign Builder AI optimization) against configured public URL. Runtime is blocked by deployment mismatch: requested /api/campaigns and AI routes are not exposed, and frontend URL serves Emergent placeholder instead of WhatCEM.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/campaigns/validate-whatsapp-content",
+        "issue": "Returns 404 on configured public URL; alias endpoint not routed in runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-optimize-content",
+        "issue": "Returns 404 on configured public URL; cannot validate optimizedContent/score/variations response.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-generate-variations",
+        "issue": "Returns 404 on configured public URL; cannot validate variation list payload.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-recommend-schedule",
+        "issue": "Returns 404 on configured public URL; cannot validate recommendedDatetimeIso/rationale payload.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns",
+        "issue": "Returns 404 on configured public URL; regression flow for save draft blocked.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/:id/start",
+        "issue": "Returns 404 on configured public URL; regression flow for launch campaign blocked.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Configured public frontend URL",
+        "issue": "https://dragon-core.preview.emergentagent.com renders generic 'Emergent | Fullstack App' placeholder, not WhatCEM Campaign Builder UI.",
+        "selector": "text=Building something incredible ~!",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Campaign Builder IA controls (optimizar/generar variaciones/recomendar horario) + draft/launch regression",
+        "issue": "Could not execute UI integration flows because target runtime does not expose WhatCEM frontend or campaigns backend routes.",
+        "affected_selectors": [
+          "[data-testid='campaign-builder-ai-controls-card']",
+          "[data-testid='campaign-builder-ai-optimize-button']",
+          "[data-testid='campaign-builder-ai-variations-button']",
+          "[data-testid='campaign-builder-ai-recommend-schedule-button']"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_campaign_ai_public_endpoints.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Deploy/runtime-sync WhatCEM build that includes /api/campaigns AI routes and Campaign Builder UI to configured public URL.",
+    "Update /app/frontend/.env REACT_APP_BACKEND_URL to the actual WhatCEM public environment for this repo iteration, then rerun backend+UI tests.",
+    "After runtime alignment, retest full requested scope including response shapes (optimizedContent/score/variations, recommendedDatetimeIso/rationale) and end-to-end draft/launch flows."
+  ],
+  "critical_code_review_comments": [
+    "Source/runtime inconsistency: server/routes/campaigns.ts clearly defines the requested endpoints, but deployed runtime returns 404 for all of them.",
+    "CampaignBuilder.tsx is very large (>700 lines) and should be split into focused modules to reduce regression risk and improve maintainability.",
+    "In recommendScheduleWithAI, converting recommended datetime via new Date(recommendedIso).toISOString().slice(0,16) can shift timezone unexpectedly for datetime-local inputs."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_campaign_ai_public_endpoints.py",
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {
+    "backend": "0%",
+    "frontend": "10%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Read /app/memory/test_credentials.md first (contains app.whatcem.com admin credentials). Testing on configured URL (/app/frontend/.env -> dragon-core.preview.emergentagent.com) currently hits non-WhatCEM placeholder and all /api/campaigns* endpoints return 404. Start next run by validating deployment URL alignment before attempting auth/UI deep tests.",
+  "rca of the issue": "Root cause is deployment/environment mismatch, not endpoint implementation in source. Reproduction: run pytest /app/backend/tests/test_campaign_ai_public_endpoints.py against REACT_APP_BACKEND_URL from /app/frontend/.env -> all requested /api/campaigns* routes return 404; open same URL in browser -> placeholder app ('Emergent | Fullstack App'). Mitigation: point configured public URL to deployed WhatCEM build containing this repo changes, then rerun full backend and frontend integration coverage.",
+  "test_credentials": "Read from /app/memory/test_credentials.md: admin@whatcem.com / Sophia21# (not used because runtime mismatch blocked auth flow execution)."
+}

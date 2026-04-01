@@ -106,6 +106,24 @@
 - Estado de sprint: Sprint 1 cerrado a nivel desarrollo/documentación (`/app/WhatCEM_Powerchat/docs/05_cierre_sprint1.md`).
 - Testing Sprint 2: el testing agent confirmó inconsistencia de entorno público (endpoints `/api/voice-campaigns*` no desplegados en runtime público) y credenciales inválidas para prueba autenticada en esa URL. Código fuente sí contiene implementación.
 
+## Avance Sprint 2 (fase 2) implementado
+- Backend IA para campañas masivas WhatsApp:
+  - `server/services/campaign-ai-optimizer.ts`
+  - endpoints nuevos en `server/routes/campaigns.ts`:
+    - `POST /api/campaigns/ai-optimize-content`
+    - `POST /api/campaigns/ai-generate-variations`
+    - `POST /api/campaigns/ai-recommend-schedule`
+    - `POST /api/campaigns/validate-whatsapp-content` (alias)
+- Frontend Campaign Builder:
+  - controles IA (provider/model/objetivo/tono/key)
+  - optimización de contenido
+  - generación de variaciones A/B
+  - recomendación de horario
+  - visualización/aplicación de variaciones
+  - racional de horario recomendado
+- Documentación agregada:
+  - `docs/08_sprint2_fase2_whatsapp_ai.md`
+
 ## Backlog priorizado
 
 ### P0 (crítico, siguiente ejecución)
