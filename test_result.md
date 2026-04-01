@@ -102,7 +102,128 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Validar la preview pública https://whatcem-modernize.preview.emergentagent.com del sandbox WhatCEM. Casos: 1) Cargar home y confirmar que NO aparece placeholder genérico, sino título 'WhatCEM Sandbox'. 2) Navegar sidebar a /settings/lead-assignment, /campaigns, /campaigns/voice y /analytics. 3) Verificar presencia de data-testid críticos: analytics-bi-whatsapp-card, analytics-bi-voice-card, campaign-dashboard-open-voice-ai-button. 4) En /campaigns hacer clic en botones IA (optimizar, variaciones, horario) y confirmar que hay feedback visual. 5) Reportar PASS/FAIL breve por flujo."
+user_problem_statement: "Validar backend del sandbox WhatCEM en https://whatcem-modernize.preview.emergentagent.com con curl: 1) GET /api/lead-assignment/rules 2) POST /api/lead-assignment/notifications/test (con phone) 3) POST /api/campaigns/ai-optimize-content 4) POST /api/campaigns y POST /api/campaigns/{id}/start 5) POST /api/voice-campaigns y POST /api/voice-campaigns/{id}/start 6) GET /api/campaigns/stats, /api/voice-campaigns/stats y /api/analytics/overview. Reporta PASS/FAIL por endpoint y resumen final."
+
+backend:
+  - task: "Lead assignment rules endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - GET /api/lead-assignment/rules returns 200 with proper configuration data including companyId, mode (round_robin), notification settings, and channel preferences."
+
+  - task: "Lead assignment notification test endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/lead-assignment/notifications/test accepts phone number and returns 200 with success response, notification ID, provider (whatsapp_gupshup), and sent status."
+
+  - task: "AI content optimization endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/campaigns/ai-optimize-content returns 200 with optimized content and rationale. AI optimization working correctly with Spanish language responses."
+
+  - task: "Campaign creation endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/campaigns creates new campaign successfully, returns 200 with campaign ID (5), name, content, status (draft), and creation timestamp."
+
+  - task: "Campaign start endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/campaigns/{id}/start works correctly with integer IDs. Returns 200 with campaignId and status 'running'. Note: API expects integer IDs, not string IDs."
+
+  - task: "Voice campaign creation endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/voice-campaigns creates voice campaign successfully, returns 200 with campaign ID (6), name, prompt, status (draft), AI provider (openai), and model (gpt-4o-mini)."
+
+  - task: "Voice campaign start endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - POST /api/voice-campaigns/{id}/start works correctly with integer IDs. Returns 200 with campaignId, status 'running', callsQueued count, and Spanish success message."
+
+  - task: "Campaign statistics endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - GET /api/campaigns/stats returns 200 with comprehensive statistics: totalCampaigns (5), draftCampaigns (3), runningCampaigns (2), deliveryRate (94%), responseRate (37%)."
+
+  - task: "Voice campaign statistics endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - GET /api/voice-campaigns/stats returns 200 with voice campaign metrics: totalCampaigns (6), startedCampaigns (3), totalCalls (8), completedCalls (8), connectionRate (61%)."
+
+  - task: "Analytics overview endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - GET /api/analytics/overview returns 200 with complete analytics including WhatsApp and voice campaign data, plus Spanish insights about CTA performance and voice AI peak hours."
 
 frontend:
   - task: "Home page title verification"
@@ -155,13 +276,13 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
-  run_ui: true
+  version: "1.1"
+  test_sequence: 2
+  run_ui: false
 
 test_plan:
   current_focus:
-    - "All validation tests completed"
+    - "Backend API validation completed"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
@@ -169,3 +290,5 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: "Public preview validation completed successfully. All 4 test cases PASSED. Home page displays correct title, all navigation routes work, critical data-testid elements are present, and AI buttons in /campaigns provide proper visual feedback with toast notifications. No critical issues found. Screenshots captured in .screenshots/ directory."
+    - agent: "testing"
+      message: "Backend API validation completed successfully. All 10 requested endpoints PASSED. Tested: lead assignment rules/notifications, AI content optimization, campaign creation/start, voice campaign creation/start, and analytics endpoints. All APIs return proper responses with correct data structures. Note: Campaign start endpoints require integer IDs (not strings). Backend is fully functional at https://whatcem-modernize.preview.emergentagent.com/api"
