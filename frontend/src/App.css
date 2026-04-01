@@ -1,34 +1,125 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #0f0f10;
+.App {
     min-height: 100vh;
+    font-family: "Manrope", sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(15, 118, 110, 0.2), transparent 32%),
+        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.2), transparent 28%),
+        linear-gradient(165deg, #f8fafc 0%, #eef2ff 42%, #ecfeff 100%);
+}
+
+.sandbox-app {
+    max-width: 1500px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    padding: 24px;
+}
+
+.sandbox-sidebar {
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    padding: 24px;
+    position: sticky;
+    top: 24px;
+    height: fit-content;
+}
+
+.sandbox-main {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
+    gap: 18px;
+}
+
+.sandbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.sandbox-nav-link {
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    padding: 10px 14px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #1f2937;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sandbox-nav-link:hover {
+    transform: translateX(3px);
+    background: rgba(20, 184, 166, 0.12);
+    border-color: rgba(13, 148, 136, 0.5);
+}
+
+.sandbox-nav-link-active {
+    background: linear-gradient(90deg, #0f766e 0%, #2563eb 100%);
     color: white;
+    border-color: transparent;
 }
 
-.App-link {
-    color: #61dafb;
+.sandbox-badge {
+    border-radius: 999px;
+    width: fit-content;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.42);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+.sandbox-metric {
+    border-radius: 12px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    background: #ffffff;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.sandbox-metric strong {
+    font-size: 20px;
+    color: #0f172a;
+}
+
+.sandbox-list-row {
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+
+@media (max-width: 1080px) {
+    .sandbox-app {
+        grid-template-columns: 1fr;
     }
-    to {
-        transform: rotate(360deg);
+
+    .sandbox-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .sandbox-app {
+        padding: 12px;
+        gap: 14px;
+    }
+
+    .sandbox-grid {
+        grid-template-columns: 1fr;
     }
 }
