@@ -1,0 +1,678 @@
+<analysis>**User's preferred language**: Spanish (You MUST automatically detect the user's primary language from their messages inside the <trajectory> tag and INSTRUCT next agent to respond in the user's preferred language only. All interactions, thoughts, and outputs to the user must be in **Spanish**).
+
+**original_problem_statement**: The user wants to modernize their legacy CRM/Omnichannel system (WhatCEM) and rebuild it with AI-powered features. They provided a GitHub repository ().
+**PRODUCT REQUIREMENTS**: 
+- Implement a 4-Sprint modernization plan.
+- Sprint 1: Lead assignment roulette (round-robin) with WhatsApp notifications via Gupshup/Twilio, modular backend architecture.
+- Sprint 2: Mass WhatsApp campaigns with AI optimizations (A/B testing, scheduling), AI Voice outbound campaigns (Twilio), and AI nodes for the Flow Builder.
+- Sprint 3: Executive and operational BI dashboards combining WhatsApp and Voice AI metrics.
+- Sprint 4: Security hardening, complete legacy migration, and QA.
+- **CRITICAL REQUIREMENT:** The user has explicitly requested a working, accessible sandbox/preview of the app to validate Sprints 1 and 2. 
+
+**what currently exists?** 
+A monolithic React (Vite) + Express + Drizzle + PostgreSQL application located at . The previous agent successfully wrote the code for Sprints 1, 2, and the beginning of Sprint 3 (Lead assignment, Voice Campaigns, AI WhatsApp Campaigns, Analytics BI). However, the application is currently unreachable via the public preview URL because the environment routing/supervisor is misconfigured and not pointing to the newly cloned repository.
+
+**Last working item**:
+- **Last item agent was working**: Integrating BI dashboards in  (Sprint 3 Phase 1) and trying to run integration tests via the . The agent was also trying to figure out how to expose the app so the user could view the preview.
+- **Status**: BLOCKED
+- **Agent Testing Done**: Y (Testing agent was used 5 times).
+- **Which testing method agent to use?**: Both. (Currently blocked by infrastructure mismatch).
+- **User Testing Done**: N
+
+**All Pending/In progress Issue list**:
+- **Issue 1 (P0)**: Preview URL / Runtime Mismatch
+  - **Attempted fixes**: Testing agent tried to hit endpoints like  and  but received 404s. The agent realized the  public URL routes to a placeholder app instead of the local  server.
+  - **Next debug checklist**: 
+    - Check Kubernetes/Supervisor configurations to ensure ports 3000/8001 are pointing to the  or  inside .
+    - Modify the environment so the frontend's API calls hit the actual backend.
+  - **Why fix this issue and what will be achieved with the fix?**: The user is highly frustrated that they cannot see a preview of the app. Fixing this fulfills the core promise made to the user and unblocks all e2e testing.
+  - **Status**: BLOCKED
+  - **Is recurring issue?**: Y (Blocked iterations 1, 3, 4, and 5 of the testing agent).
+  - **Should Test frontend/backend/both after fix?**: Both.
+  - **Blocked on other issue**: None.
+
+- **Issue 2 (P1)**: Pending Database Migrations
+  - **Attempted fixes**: The agent created new migrations (e.g., ,  for voice campaigns) but hasn't fully verified if they were executed against the active local PostgreSQL database.
+  - **Next debug checklist**: Run  or equivalent inside .
+  - **Why fix this issue and what will be achieved with the fix?**: Ensures the new AI and Lead Assignment features don't crash on DB queries.
+  - **Status**: IN PROGRESS
+  - **Is recurring issue?**: N
+  - **Should Test frontend/backend/both after fix?**: Backend.
+
+**In progress Task List**:
+- **Task 1**: Complete Sprint 3 Phase 2 (Advanced AI insights in Analytics)
+  - **Where to resume**:  and related backend BI routes.
+  - **What will be achieved with this?**: Fulfills the Sprint 3 promise of providing AI-driven recommendations based on campaign data.
+  - **Status**: IN PROGRESS
+  - **Should Test frontend/backend/both after fix?**: Both.
+  - **Blocked on something**: Issue 1 (Runtime mismatch).
+
+**Upcoming and Future Tasks**:
+- **P0**: Setup the live preview environment for the user immediately.
+- **P1**: Sprint 3 Phase 2: Connect AI anomaly detection and natural language insights to the BI Dashboard.
+- **P1**: Sprint 4: Final security hardening (fix exposed secrets in  and ), QA, and runbooks.
+- **P2**: Polish the Flow Builder UX specifically for the  and Voice Call nodes.
+
+**Completed work in this session**:
+- Created project documentation and architectural plans in .
+- Developed Lead Assignment Roulette ().
+- Added Gupshup and Twilio UI configuration panels in .
+- Implemented Twilio Voice Campaigns (, ).
+- Implemented WhatsApp AI campaign optimizations (A/B variations, scheduling) in .
+- Built unified Campaign and Voice dashboard inside  and .
+
+**Earlier issues found/mentioned but not fixed**:
+- **Issue 1**: Security Vulnerability in Legacy Routes
+  - **Debug checklist**: Check  (returns password hashes on login) and  (exposes global OAuth secrets to frontend).
+  - **Why to solve this issue and what will be achieved with this?**: Prevents severe security breaches in the modernized app. Was mentioned in the initial audit but deferred for Sprints 1 & 2 feature work.
+  - **Should Test frontend/backend/both after fix**: Backend.
+  - **Is recurring issue?**: N
+
+**Known issue recurrence from previous fork**:
+- Issue recurrence in previous fork: N/A
+- Recurrence count: 0
+- Status: N/A
+
+**Code Architecture**:
+
+
+**Key Technical Concepts**:
+Frontend: React 19, Vite, Wouter, Tailwind, Shadcn/UI.
+Backend: Node.js, Express 5.
+Database: PostgreSQL managed via Drizzle ORM.
+Architecture: Moving from a monolithic  file to domain-driven routers (e.g., ).
+
+**key DB schema**:
+- : {companyId, mode, notifyOnAssign, fallbackChannelType}
+- : {id, name, type, status, channelType, scheduledAt}
+- : {id, name, prompt, voiceProvider, status, twilioPhone}
+- : {id, contactId, channelType, assignedToUserId}
+
+**changes in tech stack**:
+- The project runs entirely on PostgreSQL (no MongoDB). The base repository was pulled from GitHub to .
+
+**All files of reference**:
+- : Contains all PRDs, technical logs, and API references created in this session.
+- : New UI for roulette assignment.
+- : New backend for Twilio AI calls.
+- : Updated to handle AI Nodes.
+
+**Areas that need refactoring**:
+- : This file is massive (~19,000 lines) and needs to continue being broken down into smaller domain routes.
+- : Huge file (~6,000 lines) that handles the drag-and-drop builder.
+
+**key api endpoints**:
+- 
+- 
+- 
+- 
+- 
+
+**Critical Info for New Agent**:
+- **LANGUAGE REQUIREMENT**: The user speaks **Spanish**. You MUST reply to the user in Spanish.
+- **ENVIRONMENT FIX REQUIRED**: The biggest failure in the current session is that the user cannot see a preview of the app. The agent worked inside the directory , but the cloud container's default routing (supervisor/nginx) seems to be pointing to a default  & . You must fix the infra/supervisor configuration so the user's public preview URL correctly serves the code from .
+- Do not run npm/yarn commands in , run them inside .
+- The user is getting frustrated by the lack of a visual preview. Solve the environment routing issue as your absolute first priority before writing more product code.
+
+**documents and test reports created in this job**:
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+-  to 
+
+**Last 10 User Messages and any pending HUMAN messages**:
+1. (User): Que sigue? -> Agent explained next steps (Sprint 3 BI dashboard, UX flows, fixing preview).
+2. (User): Ok y ya al final de este sprint quiero la vista previa -> Agent promised to deliver the preview.
+3. (User): adelante -> Agent implemented BI dashboards and ran tests (which failed due to runtime).
+4. (User): Una pregunta estas modificando el codigo original del repositorio que te di? o estas haciendo uno nuevo en el repositorio nuevo donde estamos guardando? porque esta segunda es le instruccion correcta -> Agent confirmed it is working in the cloned repo.
+5. (User): No la idea es que lo dejaras todo en el Branch Main y ahi fuera todo nuevo -> Agent confirmed it is on .
+6. (User): Y mientras ya me echaste a perder mi codigo anterior? -> Agent reassured the user their production code is untouched.
+7. (User): Ok Continúa -> Agent moved to Sprint 2 Phase 2.
+8. (User): Por que aun no me muestras la vista previa? -> Agent used support agent to explain the local vs deployment mismatch.
+9. (User): No es que me urga solo es pregunta, dime en que sprint la voy a poder ver previa aqui en emergent -> Agent said end of Sprint 1.
+10. (User): 1c (Typo/Acknowledge) -> Agent tried to run dev servers.
+
+**Project Health Check**:
+- Broken (The codebase compiles and is updated, but the environment/infrastructure configuration is broken, preventing the app from being served to the preview URL).
+
+**3rd Party Integrations**:
+- Twilio (Voice & SMS) — requires User API Key.
+- Gupshup (WhatsApp) — requires User API Key.
+- OpenAI/Anthropic/Gemini (Text generation for Scripts/Flows) — uses Emergent LLM Key.
+
+**Testing status**:
+- Testing agent used after significant changes: YES (5 iterations).
+- Troubleshoot agent used after agent stuck in loop: NO (Support agent was used instead).
+- Test files created: None directly created, but testing agent used ============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+plugins: anyio-4.13.0
+collected 20 items
+
+backend/tests/test_campaign_ai_public_endpoints.py FFFFFF                [ 30%]
+backend/tests/test_lead_assignment_public_endpoints.py FFFFFF            [ 60%]
+backend/tests/test_sprint3_bi_stats_public_endpoints.py FFF              [ 75%]
+backend/tests/test_voice_campaigns_public_endpoints.py FFFFF             [100%]
+
+=================================== FAILURES ===================================
+_________________ test_validate_whatsapp_content_alias_exists __________________
+
+api_client = <requests.sessions.Session object at 0xfe54438c5250>
+
+    def test_validate_whatsapp_content_alias_exists(api_client):
+        endpoint = "/api/campaigns/validate-whatsapp-content"
+        response = api_client.post(f"{BASE_URL}{endpoint}", json={"content": "Hola {{1}}"})
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>
+endpoint = '/api/campaigns/validate-whatsapp-content'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/validate-whatsapp-content
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+_______________________ test_ai_optimize_content_exists ________________________
+
+api_client = <requests.sessions.Session object at 0xfe5443c13c90>
+
+    def test_ai_optimize_content_exists(api_client):
+        endpoint = "/api/campaigns/ai-optimize-content"
+        payload = {
+            "content": "Urgent limited time offer buy now",
+            "whatsappChannelType": "whatsapp_unofficial",
+            "messageType": "text",
+            "objective": "Más respuestas",
+            "tone": "profesional-cercano"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns/ai-optimize-content'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/ai-optimize-content
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+______________________ test_ai_generate_variations_exists ______________________
+
+api_client = <requests.sessions.Session object at 0xfe5443386ad0>
+
+    def test_ai_generate_variations_exists(api_client):
+        endpoint = "/api/campaigns/ai-generate-variations"
+        payload = {
+            "content": "Hola {{1}}, queremos compartirte novedades",
+            "whatsappChannelType": "whatsapp_unofficial",
+            "messageType": "text"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns/ai-generate-variations'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/ai-generate-variations
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+______________________ test_ai_recommend_schedule_exists _______________________
+
+api_client = <requests.sessions.Session object at 0xfe54433cd390>
+
+    def test_ai_recommend_schedule_exists(api_client):
+        endpoint = "/api/campaigns/ai-recommend-schedule"
+        payload = {
+            "timezone": "America/Mexico_City",
+            "audienceSize": 1200,
+            "objective": "conversiones"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns/ai-recommend-schedule'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/ai-recommend-schedule
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+__________________ test_create_campaign_exists_for_save_draft __________________
+
+api_client = <requests.sessions.Session object at 0xfe54433e4ad0>
+
+    def test_create_campaign_exists_for_save_draft(api_client):
+        endpoint = "/api/campaigns"
+        payload = {
+            "name": "TEST_Campaign_AI_Regression",
+            "description": "TEST",
+            "content": "Hola {{1}}",
+            "whatsappChannelType": "whatsapp_unofficial",
+            "campaignType": "immediate",
+            "messageType": "text",
+            "channelIds": [1],
+            "segmentId": 1
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+____________________ test_start_campaign_exists_for_launch _____________________
+
+api_client = <requests.sessions.Session object at 0xfe54433ef110>
+
+    def test_start_campaign_exists_for_launch(api_client):
+        endpoint = "/api/campaigns/1/start"
+        response = api_client.post(f"{BASE_URL}{endpoint}", json={})
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_campaign_ai_public_endpoints.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns/1/start'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/1/start
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_campaign_ai_public_endpoints.py:34: AssertionError
+____________________ test_lead_assignment_rules_get_exists _____________________
+
+api_client = <requests.sessions.Session object at 0xfe54433f1b50>
+
+    def test_lead_assignment_rules_get_exists(api_client):
+        endpoint = "/api/lead-assignment/rules"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/lead-assignment/rules'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+____________________ test_lead_assignment_rules_post_exists ____________________
+
+api_client = <requests.sessions.Session object at 0xfe544341f650>
+
+    def test_lead_assignment_rules_post_exists(api_client):
+        endpoint = "/api/lead-assignment/rules"
+        payload = {
+            "mode": "round_robin",
+            "notifyOnAssign": True,
+            "onlyAvailableAgents": False,
+            "preferredChannelType": "whatsapp_twilio",
+            "fallbackChannelType": "whatsapp_gupshup",
+            "notificationTemplate": "TEST_Notification"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/lead-assignment/rules'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/rules
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+____________________ test_lead_assignment_events_get_exists ____________________
+
+api_client = <requests.sessions.Session object at 0xfe54433ce110>
+
+    def test_lead_assignment_events_get_exists(api_client):
+        endpoint = "/api/lead-assignment/events"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/lead-assignment/events'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/events
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+___________________________ test_assign_next_exists ____________________________
+
+api_client = <requests.sessions.Session object at 0xfe54433cfd10>
+
+    def test_assign_next_exists(api_client):
+        endpoint = "/api/lead-assignment/conversations/1/assign-next"
+        response = api_client.post(f"{BASE_URL}{endpoint}", json={})
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>
+endpoint = '/api/lead-assignment/conversations/1/assign-next'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/conversations/1/assign-next
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+________________________ test_notifications_test_exists ________________________
+
+api_client = <requests.sessions.Session object at 0xfe54433f57d0>
+
+    def test_notifications_test_exists(api_client):
+        endpoint = "/api/lead-assignment/notifications/test"
+        response = api_client.post(f"{BASE_URL}{endpoint}", json={"phone": "+10000000000", "message": "TEST"})
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>
+endpoint = '/api/lead-assignment/notifications/test'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/lead-assignment/notifications/test
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+_______________ test_channel_connections_post_exists_for_gupshup _______________
+
+api_client = <requests.sessions.Session object at 0xfe54435f17d0>
+
+    def test_channel_connections_post_exists_for_gupshup(api_client):
+        endpoint = "/api/channel-connections"
+        payload = {
+            "channelType": "whatsapp_gupshup",
+            "accountId": "TEST_SOURCE",
+            "accountName": "TEST_Gupshup",
+            "connectionData": {
+                "source": "TEST_SOURCE",
+                "appName": "TEST_APP",
+                "apiKey": "TEST_KEY",
+                "endpointUrl": "https://api.gupshup.io/wa/api/v1/msg"
+            },
+            "status": "active"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_lead_assignment_public_endpoints.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/channel-connections'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/channel-connections
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_lead_assignment_public_endpoints.py:34: AssertionError
+___________________ test_campaigns_stats_endpoint_is_routed ____________________
+
+api_client = <requests.sessions.Session object at 0xfe5443c193d0>
+
+    def test_campaigns_stats_endpoint_is_routed(api_client):
+        endpoint = "/api/campaigns/stats"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/campaigns/stats'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/campaigns/stats
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:34: AssertionError
+________________ test_voice_campaigns_stats_endpoint_is_routed _________________
+
+api_client = <requests.sessions.Session object at 0xfe5443be30d0>
+
+    def test_voice_campaigns_stats_endpoint_is_routed(api_client):
+        endpoint = "/api/voice-campaigns/stats"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns/stats'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns/stats
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:34: AssertionError
+__________ test_analytics_overview_endpoint_is_routed_for_regression ___________
+
+api_client = <requests.sessions.Session object at 0xfe54433e5f50>
+
+    def test_analytics_overview_endpoint_is_routed_for_regression(api_client):
+        endpoint = "/api/analytics/overview"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/analytics/overview'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/analytics/overview
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_sprint3_bi_stats_public_endpoints.py:34: AssertionError
+_______________________ test_voice_campaigns_get_exists ________________________
+
+api_client = <requests.sessions.Session object at 0xfe54433b6fd0>
+
+    def test_voice_campaigns_get_exists(api_client):
+        endpoint = "/api/voice-campaigns"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_voice_campaigns_public_endpoints.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_voice_campaigns_public_endpoints.py:34: AssertionError
+_______________________ test_voice_campaigns_post_exists _______________________
+
+api_client = <requests.sessions.Session object at 0xfe54433e0c10>
+
+    def test_voice_campaigns_post_exists(api_client):
+        endpoint = "/api/voice-campaigns"
+        payload = {
+            "name": "TEST_VoiceCampaign",
+            "description": "TEST",
+            "prompt": "Hola {{contact_name}}",
+            "twilioConnectionId": 1,
+            "contactIds": [1],
+            "aiProvider": "openai",
+            "aiModel": "gpt-4o-mini"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_voice_campaigns_public_endpoints.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_voice_campaigns_public_endpoints.py:34: AssertionError
+______________________ test_voice_campaigns_start_exists _______________________
+
+api_client = <requests.sessions.Session object at 0xfe54433e1650>
+
+    def test_voice_campaigns_start_exists(api_client):
+        endpoint = "/api/voice-campaigns/1/start"
+        response = api_client.post(f"{BASE_URL}{endpoint}", json={"contactIds": [1], "twilioConnectionId": 1})
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_voice_campaigns_public_endpoints.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns/1/start'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns/1/start
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_voice_campaigns_public_endpoints.py:34: AssertionError
+______________________ test_voice_campaigns_calls_exists _______________________
+
+api_client = <requests.sessions.Session object at 0xfe5443240290>
+
+    def test_voice_campaigns_calls_exists(api_client):
+        endpoint = "/api/voice-campaigns/1/calls"
+        response = api_client.get(f"{BASE_URL}{endpoint}")
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_voice_campaigns_public_endpoints.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns/1/calls'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns/1/calls
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_voice_campaigns_public_endpoints.py:34: AssertionError
+____________________ test_voice_campaigns_test_call_exists _____________________
+
+api_client = <requests.sessions.Session object at 0xfe5443259590>
+
+    def test_voice_campaigns_test_call_exists(api_client):
+        endpoint = "/api/voice-campaigns/test-call"
+        payload = {
+            "twilioConnectionId": 1,
+            "to": "+10000000000",
+            "prompt": "TEST prompt"
+        }
+        response = api_client.post(f"{BASE_URL}{endpoint}", json=payload)
+>       assert_not_404(response, endpoint)
+
+backend/tests/test_voice_campaigns_public_endpoints.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = <Response [404]>, endpoint = '/api/voice-campaigns/test-call'
+
+    def assert_not_404(response: requests.Response, endpoint: str):
+>       assert response.status_code != 404, f"Endpoint missing/unrouted on public URL: {endpoint}"
+E       AssertionError: Endpoint missing/unrouted on public URL: /api/voice-campaigns/test-call
+E       assert 404 != 404
+E        +  where 404 = <Response [404]>.status_code
+
+backend/tests/test_voice_campaigns_public_endpoints.py:34: AssertionError
+=========================== short test summary info ============================
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_validate_whatsapp_content_alias_exists
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_ai_optimize_content_exists
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_ai_generate_variations_exists
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_ai_recommend_schedule_exists
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_create_campaign_exists_for_save_draft
+FAILED backend/tests/test_campaign_ai_public_endpoints.py::test_start_campaign_exists_for_launch
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_lead_assignment_rules_get_exists
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_lead_assignment_rules_post_exists
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_lead_assignment_events_get_exists
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_assign_next_exists
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_notifications_test_exists
+FAILED backend/tests/test_lead_assignment_public_endpoints.py::test_channel_connections_post_exists_for_gupshup
+FAILED backend/tests/test_sprint3_bi_stats_public_endpoints.py::test_campaigns_stats_endpoint_is_routed
+FAILED backend/tests/test_sprint3_bi_stats_public_endpoints.py::test_voice_campaigns_stats_endpoint_is_routed
+FAILED backend/tests/test_sprint3_bi_stats_public_endpoints.py::test_analytics_overview_endpoint_is_routed_for_regression
+FAILED backend/tests/test_voice_campaigns_public_endpoints.py::test_voice_campaigns_get_exists
+FAILED backend/tests/test_voice_campaigns_public_endpoints.py::test_voice_campaigns_post_exists
+FAILED backend/tests/test_voice_campaigns_public_endpoints.py::test_voice_campaigns_start_exists
+FAILED backend/tests/test_voice_campaigns_public_endpoints.py::test_voice_campaigns_calls_exists
+FAILED backend/tests/test_voice_campaigns_public_endpoints.py::test_voice_campaigns_test_call_exists
+============================== 20 failed in 3.16s ============================== internally.
+- Known regressions: All API requests to the new routes return 404 because the server running on the preview URL is not the WhatCEM app.
+
+**Credentials to test flow**:
+- Email: 
+- Password: 
+(Listed in )
+
+**What agent forgot to execute**:
+The agent built out the entirety of Sprints 1 and 2 but completely failed to configure the Kubernetes container/supervisor to actually serve  to the outside world. The user repeatedly asked to see the preview, the agent promised it, but never executed the necessary DevOps/bash commands (like modifying  or setting up the right ports) to make the preview URL work.</analysis>

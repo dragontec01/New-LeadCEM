@@ -24,7 +24,7 @@
     "ui_bugs": [
       {
         "component": "Configured public frontend URL",
-        "issue": "https://dragon-core.preview.emergentagent.com renders generic placeholder ('Emergent | Fullstack App') instead of WhatCEM analytics/campaign dashboard.",
+        "issue": "https://whatcem-modernize.preview.emergentagent.com renders generic placeholder ('Emergent | Fullstack App') instead of WhatCEM analytics/campaign dashboard.",
         "selector": "text=Building something incredible ~!",
         "priority": "CRITICAL"
       }

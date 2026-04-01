@@ -49,7 +49,7 @@
     "ui_bugs": [
       {
         "component": "Configured public frontend",
-        "issue": "https://dragon-core.preview.emergentagent.com renders generic 'Emergent | Fullstack App' placeholder instead of WhatCEM dashboard/builder UI.",
+        "issue": "https://whatcem-modernize.preview.emergentagent.com renders generic 'Emergent | Fullstack App' placeholder instead of WhatCEM dashboard/builder UI.",
         "selector": "text=Building something incredible ~!",
         "priority": "CRITICAL"
       }
