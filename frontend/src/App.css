@@ -43,14 +43,20 @@
 .real-system-frame-wrapper {
     flex: 1;
     padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.real-system-frame {
-    width: 100%;
-    height: calc(100vh - 86px);
-    border: 0;
+.real-system-message {
+    width: min(800px, 92%);
+    padding: 24px;
     border-radius: 12px;
-    background: #fff;
+    border: 1px solid rgba(15, 118, 110, 0.2);
+    background: #ffffff;
+    text-align: center;
+    font-size: 16px;
+    color: #0f172a;
 }
 
 @media (max-width: 900px) {
@@ -59,7 +65,4 @@
         align-items: flex-start;
     }
 
-    .real-system-frame {
-        height: calc(100vh - 130px);
-    }
 }

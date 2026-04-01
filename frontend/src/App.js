@@ -1,8 +1,17 @@
 import "@/App.css";
+import { useEffect } from "react";
 
 const REAL_SYSTEM_URL = "https://app.whatcem.com/admin";
 
 function App() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.replace(REAL_SYSTEM_URL);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="real-system-preview" data-testid="real-system-preview-container">
       <header className="real-system-header" data-testid="real-system-preview-header">
@@ -15,21 +24,17 @@ function App() {
         <a
           data-testid="real-system-open-new-tab-link"
           href={REAL_SYSTEM_URL}
-          target="_blank"
+          target="_self"
           rel="noreferrer"
         >
-          Abrir en pestaña nueva
+          Entrar ahora
         </a>
       </header>
 
       <main className="real-system-frame-wrapper" data-testid="real-system-frame-wrapper">
-        <iframe
-          data-testid="real-system-iframe"
-          src={REAL_SYSTEM_URL}
-          title="WhatCEM Sistema Real"
-          className="real-system-frame"
-          allow="clipboard-read; clipboard-write"
-        />
+        <div className="real-system-message" data-testid="real-system-redirect-message">
+          Redirigiendo al sistema real para que puedas iniciar sesión con tus credenciales...
+        </div>
       </main>
     </div>
   );
