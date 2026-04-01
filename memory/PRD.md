@@ -124,6 +124,16 @@
 - Documentación agregada:
   - `docs/08_sprint2_fase2_whatsapp_ai.md`
 
+## Avance Sprint 2 (fase 3) implementado
+- Backend:
+  - `GET /api/voice-campaigns/stats` en `server/routes/voice-campaigns.ts`
+- Frontend:
+  - `client/src/components/campaigns/CampaignDashboard.tsx` con KPIs unificados WhatsApp + Voice
+  - acceso directo a `/campaigns/voice`
+  - refresh unificado de métricas
+- Documentación agregada:
+  - `docs/09_sprint2_fase3_dashboard_unificado.md`
+
 ## Backlog priorizado
 
 ### P0 (crítico, siguiente ejecución)

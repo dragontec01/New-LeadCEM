@@ -1,0 +1,102 @@
+{
+  "summary": "Re-tested requested Sprint 2 backend/frontend scope against configured public runtime. All target backend endpoints still return 404 and frontend URL still serves Emergent placeholder, so functional/integration validation remains blocked by runtime mismatch.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/voice-campaigns/stats",
+        "issue": "Returns 404 on configured public URL; Voice KPI endpoint unreachable.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns",
+        "issue": "GET/POST route family returns 404 in runtime; voice campaigns flow unavailable.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/voice-campaigns/:id/start and /:id/calls and /test-call",
+        "issue": "All tested routes return 404, blocking start/calls/test-call validation.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/validate-whatsapp-content",
+        "issue": "Returns 404 on public runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-optimize-content",
+        "issue": "Returns 404 on public runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-generate-variations",
+        "issue": "Returns 404 on public runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns/ai-recommend-schedule",
+        "issue": "Returns 404 on public runtime.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "/api/campaigns and /api/campaigns/:id/start",
+        "issue": "Regression endpoints for WhatsApp create/start return 404, so start/pause/resume regression cannot proceed.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Configured public frontend",
+        "issue": "https://dragon-core.preview.emergentagent.com renders generic 'Emergent | Fullstack App' placeholder instead of WhatCEM dashboard/builder UI.",
+        "selector": "text=Building something incredible ~!",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "CampaignDashboard Voice KPIs + Voice AI navigation + CampaignBuilder IA actions + WhatsApp campaign regression",
+        "issue": "Blocked because target UI is not WhatCEM app and backend routes are unrouted (404).",
+        "affected_selectors": [
+          "[data-testid='campaign-dashboard-voice-campaigns-value']",
+          "[data-testid='campaign-dashboard-voice-connection-rate-value']",
+          "[data-testid='campaign-dashboard-open-voice-ai-button']",
+          "[data-testid='campaign-builder-ai-optimize-button']",
+          "[data-testid='campaign-builder-ai-variations-button']",
+          "[data-testid='campaign-builder-ai-recommend-schedule-button']"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_voice_campaigns_public_endpoints.py",
+    "/app/backend/tests/test_campaign_ai_public_endpoints.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Align deployment/runtime so REACT_APP_BACKEND_URL points to the actual WhatCEM build containing Sprint 2 routes/UI.",
+    "After runtime alignment, rerun backend tests for full response-shape assertions (not only route existence).",
+    "Then run frontend Playwright flow for CampaignDashboard Voice KPIs, Voice AI navigation, CampaignBuilder AI actions, and WhatsApp list/start/pause/resume regression."
+  ],
+  "critical_code_review_comments": [
+    "CampaignBuilder.tsx exceeds maintainability threshold (>700 lines) and should be split into focused modules/hooks.",
+    "Many interactive elements in CampaignBuilder/CampaignDashboard still lack data-testid coverage, reducing deterministic UI testability.",
+    "Source code contains the requested endpoints, but deployed runtime does not expose them; release/infrastructure drift is the primary blocker."
+  ],
+  "updated_files": [
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": {
+    "backend": "0%",
+    "frontend": "10%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Credentials file exists at /app/memory/test_credentials.md. Runtime remains misaligned: /app/frontend/.env points to dragon-core preview URL serving placeholder app and all tested /api/voice-campaigns* and /api/campaigns AI/regression routes return 404.",
+  "rca of the issue": "RCA: deployment/runtime mismatch. Reproduction: run pytest on the two public-endpoint test files using REACT_APP_BACKEND_URL from /app/frontend/.env; 11/11 tests fail with 404. Open same URL in browser; title is 'Emergent | Fullstack App' with placeholder content, not WhatCEM. Mitigation: update public runtime routing/deployment to this repository build before re-testing.",
+  "test_credentials": "Read from /app/memory/test_credentials.md: admin@whatcem.com / Sophia21# (not executed this iteration because runtime mismatch blocks app scope).",
+  "mocked_api": "NO MOCKED APIs used in this test run."
+}
