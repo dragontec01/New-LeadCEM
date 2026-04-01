@@ -134,6 +134,16 @@
 - Documentación agregada:
   - `docs/09_sprint2_fase3_dashboard_unificado.md`
 
+## Avance Sprint 3 (fase 1) implementado
+- BI dashboards en Analytics (`client/src/pages/analytics.tsx`):
+  - panel BI WhatsApp (campañas/entrega),
+  - panel BI Voice IA (campañas/connection rate).
+- Consumo de endpoints:
+  - `GET /api/campaigns/stats`
+  - `GET /api/voice-campaigns/stats`
+- Documentación agregada:
+  - `docs/10_sprint3_fase1_bi_dashboards.md`
+
 ## Backlog priorizado
 
 ### P0 (crítico, siguiente ejecución)
