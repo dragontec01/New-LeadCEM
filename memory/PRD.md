@@ -172,3 +172,74 @@
 2. Crear endpoints base de ruleta y notificación.
 3. Construir pantalla inicial de configuración de ruleta por empresa.
 4. Integrar prueba real de envío con Twilio/Gupshup según credenciales disponibles.
+
+---
+
+## Actualización de ejecución (2026-04-01)
+
+### Objetivo ejecutado en esta iteración
+- Desbloquear la vista previa pública en Emergent (se reemplazó el placeholder por un sandbox funcional WhatCEM).
+- Exponer en runtime público los flujos de Sprint 1, Sprint 2 y Sprint 3 fase 1 para validación inmediata.
+
+### Implementado (frontend + backend activos)
+- **Frontend sandbox WhatCEM** en `/app/frontend/src/App.js`:
+  - rutas funcionales: `/`, `/settings/lead-assignment`, `/campaigns`, `/campaigns/voice`, `/analytics`
+  - navegación lateral operativa
+  - `data-testid` críticos incluidos para QA E2E
+  - UI de validación para:
+    - Lead Router IA (reglas, test notificación, auto-asignación, eventos, KPIs)
+    - Campaign Builder IA (optimización, variaciones A/B, horario, guardar/lanzar)
+    - Voice AI (crear/iniciar campaña y KPIs)
+    - BI Analytics (WhatsApp, Voice, overview ejecutivo)
+
+- **Backend sandbox WhatCEM** en `/app/backend/server.py`:
+  - Endpoints Sprint 1:
+    - `GET/POST /api/lead-assignment/rules`
+    - `GET /api/lead-assignment/events`
+    - `POST /api/lead-assignment/conversations/:id/assign-next`
+    - `POST /api/lead-assignment/notifications/test`
+    - `GET /api/lead-assignment/metrics`
+    - `POST /api/lead-assignment/auto-assign-pending`
+    - `POST /api/channel-connections`
+  - Endpoints Sprint 2:
+    - `POST /api/campaigns/validate-whatsapp-content`
+    - `POST /api/campaigns/ai-optimize-content`
+    - `POST /api/campaigns/ai-generate-variations`
+    - `POST /api/campaigns/ai-recommend-schedule`
+    - `POST /api/campaigns`
+    - `POST /api/campaigns/:id/start`
+    - `GET/POST /api/voice-campaigns`
+    - `POST /api/voice-campaigns/:id/start`
+    - `GET /api/voice-campaigns/:id/calls`
+    - `POST /api/voice-campaigns/test-call`
+  - Endpoints Sprint 3 fase 1:
+    - `GET /api/campaigns/stats`
+    - `GET /api/voice-campaigns/stats`
+    - `GET /api/analytics/overview`
+
+### Estado de pruebas
+- Smoke visual en preview pública: **OK**.
+- Testing subagent: `/app/test_reports/iteration_6.json`
+  - Backend: **100% (27/27)**
+  - Frontend: **100%** navegación y flujos
+  - Resultado: bloqueo de runtime resuelto
+
+### Nota de alcance (sandbox)
+- Integraciones externas operan en modo simulado para validación funcional de preview:
+  - Twilio Voice
+  - Gupshup WhatsApp
+  - IA de optimización de campañas
+
+### Backlog actualizado
+
+#### P0
+- Conectar integraciones reales Twilio/Gupshup (con credenciales del usuario) sin simulación.
+- Ejecutar validación E2E con tráfico real de leads/campañas.
+
+#### P1
+- Sprint 3 fase 2: insights IA avanzados y detección de anomalías sobre BI.
+- Endurecimiento de seguridad en rutas legacy señaladas (`auth.ts`, `admin-routes.ts`) del repo original.
+
+#### P2
+- Refactor de módulos grandes (`server/routes.ts`, `flow-builder.tsx`) en el repositorio original.
+- Pulido UX de nodos AI en Flow Builder.

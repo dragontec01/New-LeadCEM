@@ -7,7 +7,7 @@ from typing import Any
 from dotenv import load_dotenv
 from fastapi import APIRouter, FastAPI, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pymongo import ReturnDocument
 from starlette.middleware.cors import CORSMiddleware
 

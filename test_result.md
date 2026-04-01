@@ -101,3 +101,71 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Validar la preview pública https://whatcem-modernize.preview.emergentagent.com del sandbox WhatCEM. Casos: 1) Cargar home y confirmar que NO aparece placeholder genérico, sino título 'WhatCEM Sandbox'. 2) Navegar sidebar a /settings/lead-assignment, /campaigns, /campaigns/voice y /analytics. 3) Verificar presencia de data-testid críticos: analytics-bi-whatsapp-card, analytics-bi-voice-card, campaign-dashboard-open-voice-ai-button. 4) En /campaigns hacer clic en botones IA (optimizar, variaciones, horario) y confirmar que hay feedback visual. 5) Reportar PASS/FAIL breve por flujo."
+
+frontend:
+  - task: "Home page title verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - Home page loads correctly with title 'WhatCEM Sandbox' (not generic placeholder). Title element found at data-testid='app-title'."
+
+  - task: "Sidebar navigation to all routes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - All navigation routes working: /settings/lead-assignment, /campaigns, /campaigns/voice, /analytics. All pages load successfully with proper content."
+
+  - task: "Critical data-testid elements verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - All critical data-testid elements found: analytics-bi-whatsapp-card (line 480), analytics-bi-voice-card (line 490), campaign-dashboard-open-voice-ai-button (line 311)."
+
+  - task: "AI buttons visual feedback in /campaigns"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS - All AI buttons provide visual feedback: 'Optimizar contenido' shows optimized content with toast, 'Generar A/B' shows variations with toast, 'Recomendar horario' shows recommended time (2026-04-02T18:30:00) with toast notification."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "All validation tests completed"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "Public preview validation completed successfully. All 4 test cases PASSED. Home page displays correct title, all navigation routes work, critical data-testid elements are present, and AI buttons in /campaigns provide proper visual feedback with toast notifications. No critical issues found. Screenshots captured in .screenshots/ directory."
